@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ 随机一句 · 语录文案</title>
+    <style>
+        :root {
+            /* 温柔主题默认变量 */
+            --bg-start: #fef5f0;
+            --bg-mid: #fce4d6;
+            --bg-end: #f8d5c4;
+            --bg-orb-1: rgba(255, 200, 170, 0.45);
+            --bg-orb-2: rgba(255, 180, 150, 0.3);
+            --bg-orb-3: rgba(255, 220, 190, 0.35);
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --card-shadow: 0 8px 32px rgba(180, 120, 90, 0.18), 0 2px 8px rgba(180, 130, 100, 0.10);
+            --card-border: rgba(255, 255, 255, 0.7);
+            --text-color: #4a3230;
+            --text-secondary: #6b4d48;
+            --badge-bg: #f2c4b3;
+            --badge-text: #8b3a2f;
+            --badge-border: #e8b099;
+            --btn-bg: #e8917e;
+            --btn-hover-bg: #f0a595;
+            --btn-shadow: 0 6px 20px rgba(220, 130, 110, 0.4);
+            --btn-text: #fff;
+            --tag-recommend-color: #c9705c;
+            --tag-recommend-bg: rgba(255, 220, 200, 0.7);
+            --divider-color: rgba(180, 130, 110, 0.3);
+            --indicator-color: #b88370;
+            --font-quote: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+            --transition-speed: 0.5s;
+        }
+
+        body[data-theme="dark"] {
+            --bg-start: #1a1a2e;
+            --bg-mid: #1f1f38;
+            --bg-end: #251a35;
+            --bg-orb-1: rgba(100, 70, 140, 0.35);
+            --bg-orb-2: rgba(60, 40, 90, 0.25);
+            --bg-orb-3: rgba(130, 100, 160, 0.2);
+            --card-bg: rgba(28, 26, 40, 0.75);
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(30, 20, 50, 0.3);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-color: #d8d0e8;
+            --text-secondary: #b8b0c8;
+            --badge-bg: #3d2a55;
+            --badge-text: #c8b8e8;
+            --badge-border: #5a3f70;
+            --btn-bg: #6b4c8a;
+            --btn-hover-bg: #7d5ea0;
+            --btn-shadow: 0 6px 20px rgba(80, 50, 120, 0.5);
+            --btn-text: #e8dff5;
+            --tag-recommend-color: #b098d0;
+            --tag-recommend-bg: rgba(60, 40, 80, 0.6);
+            --divider-color: rgba(150, 130, 180, 0.25);
+            --indicator-color: #9a85b8;
+            --font-quote: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+        }
+
+        body[data-theme="ancient"] {
+            --bg-start: #f7f2e9;
+            --bg-mid: #efe6d5;
+            --bg-end: #e2d5bc;
+            --bg-orb-1: rgba(180, 160, 130, 0.3);
+            --bg-orb-2: rgba(200, 180, 140, 0.22);
+            --bg-orb-3: rgba(160, 145, 115, 0.25);
+            --card-bg: rgba(255, 250, 240, 0.7);
+            --card-shadow: 0 8px 32px rgba(140, 120, 90, 0.2), 0 2px 8px rgba(150, 130, 100, 0.12);
+            --card-border: rgba(200, 180, 150, 0.5);
+            --text-color: #3d3224;
+            --text-secondary: #5c4d3a;
+            --badge-bg: #d5c5a8;
+            --badge-text: #4a3828;
+            --badge-border: #c4b090;
+            --btn-bg: #8b7355;
+            --btn-hover-bg: #a0896b;
+            --btn-shadow: 0 6px 20px rgba(120, 95, 65, 0.4);
+            --btn-text: #fef9f2;
+            --tag-recommend-color: #7a6040;
+            --tag-recommend-bg: rgba(210, 190, 155, 0.65);
+            --divider-color: rgba(160, 140, 110, 0.3);
+            --indicator-color: #8b7355;
+            --font-quote: 'KaiTi', 'STKaiti', '楷体', 'Songti SC', 'STSong', 'Noto Serif SC', 'PingFang SC', 'Microsoft YaHei', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+            background: linear-gradient(160deg, var(--bg-start) 0%, var(--bg-mid) 35%, var(--bg-end) 70%, var(--bg-start) 100%);
+            background-size: 200% 200%;
+            background-position: center;
+            transition: background 0.5s ease, background-size 0.5s ease;
+            position: relative;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 背景光斑装饰 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -15%;
+            left: -10%;
+            width: 55%;
+            height: 70%;
+            background: radial-gradient(ellipse at center, var(--bg-orb-1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background 0.5s ease;
+            animation: orbFloat1 12s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -12%;
+            right: -8%;
+            width: 50%;
+            height: 60%;
+            background: radial-gradient(ellipse at center, var(--bg-orb-2) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background 0.5s ease;
+            animation: orbFloat2 15s ease-in-out infinite;
+        }
+
+        /* 第三个光斑——使用额外元素 */
+        .bg-orb-extra {
+            position: fixed;
+            top: 40%;
+            left: 55%;
+            width: 35%;
+            height: 45%;
+            background: radial-gradient(ellipse at center, var(--bg-orb-3) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background 0.5s ease;
+            animation: orbFloat3 18s ease-in-out infinite;
+        }
+
+        @keyframes orbFloat1 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(3%, -2%) scale(1.08);
+            }
+            50% {
+                transform: translate(-1%, 3%) scale(0.94);
+            }
+            75% {
+                transform: translate(2%, 1%) scale(1.05);
+            }
+        }
+
+        @keyframes orbFloat2 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(-2%, -3%) scale(1.1);
+            }
+            66% {
+                transform: translate(3%, 2%) scale(0.92);
+            }
+        }
+
+        @keyframes orbFloat3 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            30% {
+                transform: translate(4%, 2%) scale(1.06);
+            }
+            60% {
+                transform: translate(-3%, -1%) scale(0.96);
+            }
+            85% {
+                transform: translate(1%, 3%) scale(1.04);
+            }
+        }
+
+        /* 主容器 */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 560px;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        /* 标题区域 */
+        .header {
+            text-align: center;
+            user-select: none;
+        }
+
+        .header-icon {
+            font-size: 2.2rem;
+            display: block;
+            margin-bottom: 4px;
+            animation: iconBounce 2.5s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes iconBounce {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+            50% {
+                transform: translateY(0);
+            }
+            70% {
+                transform: translateY(-5px);
+            }
+            85% {
+                transform: translateY(0);
+            }
+        }
+
+        .header-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-color);
+            letter-spacing: 0.06em;
+            transition: color 0.5s ease;
+            margin: 0;
+        }
+
+        .header-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.04em;
+            margin-top: 2px;
+            transition: color 0.5s ease;
+        }
+
+        /* 文案卡片区域 */
+        .card-wrapper {
+            width: 100%;
+            position: relative;
+        }
+
+        /* 推荐标签 */
+        .recommend-tag {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--tag-recommend-bg);
+            color: var(--tag-recommend-color);
+            font-size: 0.78rem;
+            font-weight: 500;
+            padding: 5px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.5s ease;
+            pointer-events: none;
+        }
+
+        .recommend-tag .tag-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: dotPulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes dotPulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.6);
+            }
+        }
+
+        /* 文案卡片 */
+        .quote-card {
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 36px 28px 28px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            position: relative;
+            transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease,
+                opacity 0.35s ease, transform 0.35s ease;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .quote-card.fade-out {
+            opacity: 0;
+            transform: scale(0.94);
+        }
+
+        .quote-card.fade-in {
+            animation: cardFadeIn 0.4s ease forwards;
+        }
+
+        @keyframes cardFadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.94);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 装饰引号 */
+        .quote-decoration {
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.08;
+            pointer-events: none;
+            line-height: 1;
+            transition: color 0.5s ease;
+            color: var(--text-color);
+        }
+
+        .quote-decoration.left {
+            top: 8px;
+            left: 16px;
+        }
+
+        .quote-decoration.right {
+            bottom: 0px;
+            right: 16px;
+        }
+
+        /* 文案文字 */
+        .quote-text {
+            font-family: var(--font-quote);
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: var(--text-color);
+            line-height: 1.8;
+            letter-spacing: 0.04em;
+            transition: color 0.5s ease, font-family 0.5s ease;
+            position: relative;
+            z-index: 1;
+            word-break: break-word;
+        }
+
+        /* 分割线 */
+        .quote-divider {
+            width: 50px;
+            height: 2px;
+            background: var(--divider-color);
+            border-radius: 1px;
+            transition: background 0.5s ease;
+            opacity: 0.7;
+        }
+
+        /* 类别标签 */
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            padding: 5px 14px;
+            border-radius: 16px;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            border: 1px solid var(--badge-border);
+            letter-spacing: 0.04em;
+            transition: all 0.5s ease;
+            user-select: none;
+        }
+
+        /* 按钮区域 */
+        .button-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .random-btn {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: none;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            box-shadow: var(--btn-shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            outline: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .random-btn:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+            filter: brightness(1.08);
+        }
+
+        .random-btn:active {
+            transform: translateY(0) scale(0.94);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.12s ease;
+            filter: brightness(0.92);
+        }
+
+        .random-btn::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: rgba(255, 255, 255, 0.5);
+            border-right-color: rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            animation: none;
+            pointer-events: none;
+        }
+
+        .random-btn.spinning::after {
+            opacity: 1;
+            animation: btnSpin 0.6s linear;
+        }
+
+        @keyframes btnSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 主题指示器 */
+        .theme-indicator {
+            font-size: 0.75rem;
+            color: var(--indicator-color);
+            letter-spacing: 0.04em;
+            font-weight: 400;
+            transition: color 0.5s ease;
+            user-select: none;
+            opacity: 0.75;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 16px;
+                gap: 18px;
+                max-width: 100%;
+            }
+
+            .quote-card {
+                padding: 30px 18px 22px;
+                border-radius: 16px;
+                min-height: 120px;
+                gap: 12px;
+            }
+
+            .quote-text {
+                font-size: 1.15rem;
+                line-height: 1.7;
+            }
+
+            .random-btn {
+                width: 72px;
+                height: 72px;
+                font-size: 0.9rem;
+            }
+
+            .recommend-tag {
+                font-size: 0.7rem;
+                padding: 4px 10px;
+                top: -12px;
+            }
+
+            .header-icon {
+                font-size: 1.7rem;
+            }
+
+            .header-title {
+                font-size: 1.1rem;
+            }
+
+            .header-subtitle {
+                font-size: 0.7rem;
+            }
+
+            .category-badge {
+                font-size: 0.7rem;
+                padding: 4px 10px;
+            }
+
+            .quote-decoration {
+                font-size: 2.8rem;
+            }
+            .quote-decoration.left {
+                top: 4px;
+                left: 8px;
+            }
+            .quote-decoration.right {
+                bottom: -2px;
+                right: 8px;
+            }
+
+            .theme-indicator {
+                font-size: 0.68rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .quote-text {
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+            .random-btn {
+                width: 62px;
+                height: 62px;
+                font-size: 0.8rem;
+            }
+            .quote-card {
+                padding: 26px 12px 18px;
+                border-radius: 14px;
+            }
+            .recommend-tag {
+                font-size: 0.65rem;
+                padding: 3px 8px;
+                top: -10px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="gentle">
+    <!-- 额外背景光斑 -->
+    <div class="bg-orb-extra" aria-hidden="true"></div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 标题区域 -->
+        <header class="header">
+            <span class="header-icon" id="headerIcon">🌸</span>
+            <h1 class="header-title">随机一句</h1>
+            <p class="header-subtitle">遇见恰好的文字</p>
+        </header>
+
+        <!-- 文案卡片区域 -->
+        <div class="card-wrapper">
+            <!-- 推荐标签 -->
+            <div class="recommend-tag" id="recommendTag">
+                <span class="tag-dot"></span>
+                <span id="recommendTagText">✨ 今日推荐</span>
+            </div>
+
+            <!-- 文案卡片 -->
+            <div class="quote-card" id="quoteCard">
+                <span class="quote-decoration left" aria-hidden="true">"</span>
+                <span class="quote-decoration right" aria-hidden="true">"</span>
+                <p class="quote-text" id="quoteText"></p>
+                <div class="quote-divider"></div>
+                <span class="category-badge" id="categoryBadge"></span>
+            </div>
+        </div>
+
+        <!-- 按钮区域 -->
+        <div class="button-area">
+            <button class="random-btn" id="randomBtn" title="随机一句">
+                随机<br>一句
+            </button>
+            <span class="theme-indicator" id="themeIndicator">暖色 · 温柔</span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ==================== 文案库 ====================
+            const quotesData = [
+                // 温柔文案 (category: 'gentle')
+                { text: '你是我在这人间，最想收藏的那一抹温柔。', category: 'gentle' },
+                { text: '不必慌张，月亮也曾在黑暗中摸索，才学会发光。', category: 'gentle' },
+                { text: '世界偶尔薄凉，但内心一定要繁花似锦。', category: 'gentle' },
+                { text: '愿你被这世界温柔以待，即使生命总以刻薄相欺。', category: 'gentle' },
+                { text: '所有的相遇，都是久别重逢的温柔。', category: 'gentle' },
+                { text: '慢慢来，谁不是翻山越岭去爱。', category: 'gentle' },
+                { text: '你笑起来的样子，像是春天的风，温柔了整个季节。', category: 'gentle' },
+                { text: '愿你眉眼温润，心中有光，所遇皆良善，所行化坦途。', category: 'gentle' },
+
+                // 暗黑语录 (category: 'dark')
+                { text: '我们都是深渊中的星，彼此照亮，又彼此吞噬。', category: 'dark' },
+                { text: '人生是一场盛大的腐烂，我们都是其中的蛆虫，却妄想飞向太阳。', category: 'dark' },
+                { text: '深夜适合思考，也适合崩溃，但天亮之后必须假装无恙。', category: 'dark' },
+                { text: '世界本没有光，说的人多了，便以为有了。', category: 'dark' },
+                { text: '你所以为的深情，不过是他人眼里的笑话。', category: 'dark' },
+                { text: '孤独不是没人陪，而是喧嚣中，你依然觉得冷。', category: 'dark' },
+                { text: '面具戴久了，就长在脸上了，撕下来的时候，连皮带肉。', category: 'dark' },
+                { text: '每个人都在自己的深渊里，仰望着别人的星空。', category: 'dark' },
+
+                // 古风句子 (category: 'ancient')
+                { text: '一壶浊酒喜相逢，古今多少事，都付笑谈中。', category: 'ancient' },
+                { text: '青山不老，为雪白头；绿水无忧，因风皱面。', category: 'ancient' },
+                { text: '此去经年，应是良辰好景虚设，便纵有千种风情，更与何人说。', category: 'ancient' },
+                { text: '醉卧沙场君莫笑，古来征战几人回。', category: 'ancient' },
+                { text: '江湖夜雨十年灯，谁人共我立黄昏。', category: 'ancient' },
+                { text: '云深不知处，只在此山中。', category: 'ancient' },
+                { text: '人生若只如初见，何事秋风悲画扇。', category: 'ancient' },
+                { text: '桃李春风一杯酒，江湖夜雨十年灯。', category: 'ancient' },
+            ];
+
+            // ==================== 类别映射 ====================
+            const categoryMap = {
+                gentle: {
+                    theme: 'gentle',
+                    badgeText: '🌸 温柔·治愈',
+                    tagText: '✨ 今日推荐',
+                    indicatorText: '暖色 · 温柔',
+                    headerIcon: '🌸',
+                    isDefaultTag: true,
+                },
+                dark: {
+                    theme: 'dark',
+                    badgeText: '🌑 暗黑·哲思',
+                    tagText: '🖤 暗黑语录',
+                    indicatorText: '暗调 · 深沉',
+                    headerIcon: '🌑',
+                    isDefaultTag: false,
+                },
+                ancient: {
+                    theme: 'ancient',
+                    badgeText: '🏮 古风·诗意',
+                    tagText: '🍃 古风雅韵',
+                    indicatorText: '宣纸 · 古风',
+                    headerIcon: '🏮',
+                    isDefaultTag: false,
+                },
+            };
+
+            // ==================== DOM元素 ====================
+            const body = document.body;
+            const quoteCard = document.getElementById('quoteCard');
+            const quoteText = document.getElementById('quoteText');
+            const categoryBadge = document.getElementById('categoryBadge');
+            const recommendTag = document.getElementById('recommendTag');
+            const recommendTagText = document.getElementById('recommendTagText');
+            const themeIndicator = document.getElementById('themeIndicator');
+            const headerIcon = document.getElementById('headerIcon');
+            const randomBtn = document.getElementById('randomBtn');
+
+            // ==================== 状态 ====================
+            let currentQuote = null;
+            let isAnimating = false;
+
+            // ==================== 函数 ====================
+            /** 从指定类别中随机获取一句 */
+            function getRandomQuoteByCategory(category) {
+                const filtered = quotesData.filter(q => q.category === category);
+                if (filtered.length === 0) return quotesData[0];
+                const index = Math.floor(Math.random() * filtered.length);
+                return filtered[index];
+            }
+
+            /** 从所有文案中完全随机获取一句 */
+            function getRandomQuote() {
+                const index = Math.floor(Math.random() * quotesData.length);
+                return quotesData[index];
+            }
+
+            /** 更新页面主题（背景、卡片样式等） */
+            function updateTheme(category) {
+                const config = categoryMap[category];
+                if (!config) return;
+                body.setAttribute('data-theme', config.theme);
+            }
+
+            /** 更新卡片内容 */
+            function updateCardContent(quote) {
+                const config = categoryMap[quote.category];
+                quoteText.textContent = quote.text;
+                categoryBadge.textContent = config.badgeText;
+                recommendTagText.textContent = config.tagText;
+                themeIndicator.textContent = config.indicatorText;
+                headerIcon.textContent = config.headerIcon;
+
+                // 更新推荐标签的显示（温柔类初始显示"今日推荐"，其他显示对应类别）
+                if (config.isDefaultTag && currentQuote === null) {
+                    // 首次加载温柔文案，使用默认的"今日推荐"标签
+                    recommendTagText.textContent = '✨ 今日推荐';
+                }
+            }
+
+            /** 显示文案（带动画） */
+            function displayQuote(quote) {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                // 先淡出
+                quoteCard.classList.add('fade-out');
+
+                // 等待淡出动画完成后更新内容
+                const fadeOutDuration = 350;
+                setTimeout(() => {
+                    // 更新主题
+                    updateTheme(quote.category);
+                    // 更新内容
+                    updateCardContent(quote);
+                    currentQuote = quote;
+
+                    // 淡入
+                    quoteCard.classList.remove('fade-out');
+                    quoteCard.classList.add('fade-in');
+
+                    // 清理动画类
+                    setTimeout(() => {
+                        quoteCard.classList.remove('fade-in');
+                        isAnimating = false;
+                    }, 400);
+                }, fadeOutDuration);
+            }
+
+            /** 按钮旋转动画 */
+            function triggerButtonAnimation() {
+                randomBtn.classList.add('spinning');
+                setTimeout(() => {
+                    randomBtn.classList.remove('spinning');
+                }, 620);
+            }
+
+            /** 处理点击事件 */
+            function handleRandomClick() {
+                if (isAnimating) return;
+                triggerButtonAnimation();
+                const quote = getRandomQuote();
+                displayQuote(quote);
+            }
+
+            // ==================== 初始化 ====================
+            function init() {
+                // 默认从温柔文案中随机选一句
+                const defaultQuote = getRandomQuoteByCategory('gentle');
+                currentQuote = defaultQuote;
+                updateTheme(defaultQuote.category);
+                updateCardContent(defaultQuote);
+                // 初始显示"今日推荐"
+                recommendTagText.textContent = '✨ 今日推荐';
+                // 确保卡片可见
+                quoteCard.style.opacity = '1';
+                quoteCard.style.transform = 'scale(1)';
+            }
+
+            // ==================== 事件绑定 ====================
+            randomBtn.addEventListener('click', handleRandomClick);
+
+            // 支持键盘空格键触发
+            document.addEventListener('keydown', function(e) {
+                if (e.code === 'Space' && document.activeElement === document.body) {
+                    e.preventDefault();
+                    handleRandomClick();
+                }
+            });
+
+            // 支持按钮获得焦点后按回车触发
+            randomBtn.addEventListener('keydown', function(e) {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    e.preventDefault();
+                    handleRandomClick();
+                }
+            });
+
+            // ==================== 启动 ====================
+            init();
+
+            console.log('✨ 随机一句 · 语录文案页面已就绪');
+            console.log('   - 点击圆形按钮或按空格键随机切换文案');
+            console.log('   - 三类文案：温柔治愈 / 暗黑哲思 / 古风诗意');
+            console.log('   - 背景将随文案类别自动切换');
+        })();
+    </script>
+</body>
+</html>
